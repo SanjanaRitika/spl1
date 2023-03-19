@@ -124,3 +124,73 @@ void view_options()
     }
 
 }
+void add()
+{
+	item product;
+	char ch;
+	FILE *fp=fopen("records.bin","ab4");
+	
+	FILE *counterr=fopen("counter.dat","r");
+	int count;
+	fscanf(counterr,"%d",&count);
+	
+	
+
+	product.prodno=1000+count;
+	product.prodno=checkprodno(product.prodno,count);
+	
+	printf("Enter Product Name: ");
+	scanf("%s",product.prodname);
+	printf("Enter Quantity: ");
+	scanf("%d",&product.qty);
+	printf("Enter Price: ");
+	scanf("%f",&product.price);
+	printf("Enter manufacturing date of item: (dd/mm/yyyy) \n");
+	scanf("%d/%d/%d",&product.mfg.day,&product.mfg.month,&product.mfg.year);
+	checkdate(product.mfg.day,product.mfg.month,product.mfg.year);
+	printf("Enter expiration date of item: (dd/mm/yyyy) \n");
+	scanf("%d/%d/%d",&product.exp.day,&product.exp.month,&product.exp.year);
+	checkdate(product.exp.day,product.exp.month,product.exp.year);
+	printf("Enter type of item: (veg/fruit/gen) \n");
+	scanf("%s",product.type);
+	
+		
+	fclose(counterr);
+	count++;
+	
+	FILE *counterw=fopen("counter.dat","w");
+	fprintf(counterw,"%d",count);
+	fclose(counterw);
+
+	
+	fwrite(&product, sizeof(item), 1, fp);
+	fclose(fp);
+	
+	
+	printf("\n\nDo you want to add more items? [Y/N]\n");
+	getchar();
+	scanf("%c",&ch);
+	if(ch=='Y'||ch=='y')
+	{
+		add();
+	}
+	else 
+	{
+		printf("\n\nWould you like to go back to the menu? [Y/N]\n");
+		getchar();
+		scanf("%c",&ch);
+		
+		if(ch=='Y'||ch=='y')
+		{
+			menu();
+		}
+		
+		else 
+		{
+			exit(0);
+		}
+		
+	}
+	
+}
+
