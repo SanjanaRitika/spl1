@@ -1,0 +1,194 @@
+void merge(item arr[], int left, int middle, int right, int num_based) {
+
+    int i, j, k;
+    int n1 = middle - left + 1;
+    int n2 = right - middle;
+    
+    item L[n1], R[n2];
+    
+    for (i = 0; i < n1; i++)
+        L[i] = arr[left + i];
+    for (j = 0; j < n2; j++)
+        R[j] = arr[middle + 1 + j];
+    
+    i = 0;
+    j = 0;
+    k = left;
+    while (i < n1 && j < n2) {
+
+
+        if ((num_based == 1) ? (L[i].prodno <= R[j].prodno):(strcmp(L[i].prodname,R[j].prodname) <=0)) {
+            arr[k] = L[i];
+            i++;
+        }
+        else {
+            arr[k] = R[j];
+            j++;
+        }
+        k++;
+    }
+    
+    while (i < n1) {
+        arr[k] = L[i];
+        i++;
+        k++;
+    }
+    
+    while (j < n2) {
+        arr[k] = R[j];
+        j++;
+        k++;
+    }
+}
+
+void mergeSort(item arr[], int left, int right, int num_based) {
+
+    if (left < right) {
+        int middle = left + (right - left) / 2;
+        
+        mergeSort(arr, left, middle, num_based);
+        mergeSort(arr, middle + 1, right, num_based);
+        merge(arr, left, middle, right, num_based);
+
+    }
+
+}
+
+
+
+void sortprodno()
+{
+	item product[100]; 
+	FILE *fp=fopen("records.bin","rb");
+	FILE *counter=fopen("counter.dat","r");
+	
+	int count;
+	fscanf(counter,"%d",&count);
+	
+	fread(&product, sizeof(product), 1, fp);
+	
+	mergeSort(product, 0, count - 1, 1);
+
+	
+	printf("\n -----------------------------------------------------------------------------------------------------------");
+	printf("\n|   Product no   |   Product Name   |   Stock   |    Price   |    Mfg date   |    Exp date    |     Type    |" );
+	printf("\n -----------------------------------------------------------------------------------------------------------");
+	
+	for(int i=0;i<count;i++)
+	{
+		printf("\n|   %10d   |   ",product[i].prodno);
+		printf("%12s   |   ",product[i].prodname);
+		printf("%5d   |   ",product[i].qty);
+		printf("%.2f    |   ",product[i].price);
+		printf("%2d/%2d/%2d  |   ",product[i].mfg.day,product[i].mfg.month,product[i].mfg.year);
+		printf("%2d/%2d/%2d   |   ",product[i].exp.day,product[i].exp.month,product[i].exp.year);
+		printf("%5s     |",product[i].type);
+	}
+	
+	printf("\n -----------------------------------------------------------------------------------------------------------");		
+	
+	char ch;
+	fclose(fp);
+	printf("\n\nWould you like to go back to the menu? [Y/N]\n");
+	getchar();
+	scanf("%c",&ch);
+	
+	if(ch=='Y'||ch=='y')
+	{
+		clrscr();
+		menu();
+	}
+	
+	else 
+	{
+		exit(0);
+	}
+	
+}
+
+
+void checkdate(int day,int month,int year)
+{
+	if( (day>30 && month == (  2 || 4 || 6 || 9 ||  11 )))
+	{
+		printf("\nInvalid date\nPlease enter details again\n");
+		add();
+	}
+	
+	if( (day>31 && month == (  1 || 2 || 3 || 5 || 7 ||  8 ||  10 ||  12 )))
+	{
+		printf("\nInvalid date\nPlease enter details again\n");
+		add();
+	}
+	
+	if( (day>29 && month == 2))
+	{
+		printf("\nInvalid date\nPlease enter details again\n");
+		add();
+	}
+	
+	if (year<0 || year>2500)
+	{
+		printf("\nInvalid date\nPlease enter details again\n");
+		add();
+	}
+	
+	if (month<1 || month>12)
+	{
+		printf("\nInvalid date\nPlease enter details again");
+		add();
+	}
+
+}
+
+
+void sortalphabetically()
+{
+
+	item product[100]; 
+	
+	FILE *fp=fopen("records.bin","rb");
+	FILE *counter=fopen("counter.dat","r");
+	
+	int count;
+	fscanf(counter,"%d",&count);
+	
+	fread(&product, sizeof(product), 1, fp);
+
+	mergeSort(product, 0, count - 1, 0);
+
+	printf("\n -----------------------------------------------------------------------------------------------------------");
+	printf("\n|   Product no   |   Product Name   |   Stock   |    Price   |    Mfg date   |    Exp date    |     Type    |" );
+	printf("\n -----------------------------------------------------------------------------------------------------------");
+	
+	for(int i=0;i<count;i++)
+	{
+		printf("\n|   %10d   |   ",product[i].prodno);
+		printf("%12s   |   ",product[i].prodname);
+		printf("%5d   |   ",product[i].qty);
+		printf("%.2f    |   ",product[i].price);
+		printf("%2d/%2d/%2d  |   ",product[i].mfg.day,product[i].mfg.month,product[i].mfg.year);
+		printf("%2d/%2d/%2d   |   ",product[i].exp.day,product[i].exp.month,product[i].exp.year);
+		printf("%5s     |",product[i].type);
+	}
+	printf("\n -----------------------------------------------------------------------------------------------------------");
+	
+	fclose(fp);
+	
+	char ch;
+	printf("\n\nWould you like to go back to the menu? [Y/N]\n");
+	getchar();
+	scanf("%c",&ch);
+	
+	if(ch=='Y'||ch=='y')
+	{
+		clrscr();
+		menu();
+	}
+	
+	else 
+	{
+		exit(0);
+	}
+	
+}
