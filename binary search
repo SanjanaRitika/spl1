@@ -1,0 +1,73 @@
+void searchprodno()
+{
+	item product[100]; 
+	int location;
+	
+	FILE *fp=fopen("records.bin","rb");
+	FILE *counter=fopen("counter.dat","r");
+	
+	int count;
+	fscanf(counter,"%d",&count);
+	
+	fread(&product, sizeof(product), 1, fp);
+	
+	printf("\nEnter Product number of item to search: ");
+	int prodno;
+	scanf("%d",&prodno);
+
+	mergeSort(product, 0, count - 1, 1);
+	location = binarySearch(product,prodno,count);
+	
+	printf("\n -----------------------------------------------------------------------------------------------------------");
+	printf("\n|   Product no   |   Product Name   |   Stock   |    Price   |    Mfg date   |    Exp date    |     Type    |" );
+	printf("\n -----------------------------------------------------------------------------------------------------------");
+		
+	printf("\n|   %10d   |   ",product[location].prodno);
+	printf("%12s   |   ",product[location].prodname);
+	printf("%5d   |   ",product[location].qty);
+	printf("%.2f    |   ",product[location].price);
+	printf("%2d/%2d/%2d  |   ",product[location].mfg.day,product[location].mfg.month,product[location].mfg.year);
+	printf("%2d/%2d/%2d   |   ",product[location].exp.day,product[location].exp.month,product[location].exp.year);
+	printf("%5s     |",product[location].type);
+		
+		
+	printf("\n -----------------------------------------------------------------------------------------------------------");
+
+	if(location==-1)
+		{
+			printf("We are sorry the item your looking for is not found\n\n");
+			char ch;
+			printf("\n\nWould you like to go back to the menu? [Y/N]\n");
+			getchar();
+			scanf("%c",&ch);
+			
+			if(ch=='Y'||ch=='y')
+			{
+				clrscr();
+				menu();
+			}
+			else 
+			{
+				exit(0);
+			}	
+		}
+	else{
+		char ch;
+		fclose(fp);
+		printf("\n\nWould you like to go back to the menu? [Y/N]\n");
+		getchar();
+		scanf("%c",&ch);
+		
+		if(ch=='Y'||ch=='y')
+		{
+			clrscr();
+			menu();
+		}
+
+		
+		else 
+		{
+			exit(0);
+		}
+	}
+}
